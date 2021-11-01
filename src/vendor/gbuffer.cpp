@@ -1,6 +1,7 @@
 #include <gbuffer.hpp>
 
-gbuffer::gbuffer() {
+gbuffer::gbuffer()
+{
 	width = NULL;
 	height = NULL;
 
@@ -20,11 +21,13 @@ gbuffer::gbuffer() {
 	final_tex = NULL;
 }
 
-gbuffer::~gbuffer() {
+gbuffer::~gbuffer()
+{
 	del();
 }
 
-GLvoid gbuffer::init(GLuint w, GLuint h) {
+GLvoid gbuffer::init(GLuint w, GLuint h)
+{
 	width = w;
 	height = h;
 	del();
@@ -50,13 +53,13 @@ GLvoid gbuffer::init(GLuint w, GLuint h) {
 	glNamedRenderbufferStorage(depth_rbo, GL_DEPTH_COMPONENT32, width, height);
 	glNamedFramebufferRenderbuffer(fbo, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_rbo);
 
-	if (glCheckNamedFramebufferStatus(fbo, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+	if (glCheckNamedFramebufferStatus(fbo, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
 		printf("Incomplete FBO!");
 		std::terminate();
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 
 	// Bloom setup
 	glCreateFramebuffers(1, &ping_fbo);
@@ -64,20 +67,21 @@ GLvoid gbuffer::init(GLuint w, GLuint h) {
 	ping_tex = create_texture_rgba32f();
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ping_tex, 0);
 
-	if (glCheckNamedFramebufferStatus(ping_fbo, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+	if (glCheckNamedFramebufferStatus(ping_fbo, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
 		printf("Incomplete FBO!");
 		std::terminate();
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-
 	glCreateFramebuffers(1, &pong_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, pong_fbo);
 	pong_tex = create_texture_rgba32f();
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pong_tex, 0);
 
-	if (glCheckNamedFramebufferStatus(pong_fbo, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+	if (glCheckNamedFramebufferStatus(pong_fbo, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
 		printf("Incomplete FBO!");
 		std::terminate();
 	}
@@ -89,7 +93,8 @@ GLvoid gbuffer::init(GLuint w, GLuint h) {
 	final_tex = create_texture_rgba32f();
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, final_tex, 0);
 
-	if (glCheckNamedFramebufferStatus(final_fbo, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+	if (glCheckNamedFramebufferStatus(final_fbo, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
 		printf("Incomplete FBO!");
 		std::terminate();
 	}
@@ -97,11 +102,12 @@ GLvoid gbuffer::init(GLuint w, GLuint h) {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-GLuint gbuffer::create_texture_rgba32f() {
+GLuint gbuffer::create_texture_rgba32f()
+{
 	GLuint handle;
 	glGenTextures(1, &handle);
 	glBindTexture(GL_TEXTURE_2D, handle);
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+	// glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -111,18 +117,30 @@ GLuint gbuffer::create_texture_rgba32f() {
 	return handle;
 }
 
-GLvoid gbuffer::del() {
-	if (fbo) glDeleteFramebuffers(1, &fbo);
-	if (normal_depth_tex)	glDeleteTextures(1, &normal_depth_tex);
-	if (diffuse_specular_tex) glDeleteTextures(1, &diffuse_specular_tex);
-	if (emitting_shininess_tex)	glDeleteTextures(1, &emitting_shininess_tex);
-	if (depth_rbo) glDeleteTextures(1, &depth_rbo);
+GLvoid gbuffer::del()
+{
+	if (fbo)
+		glDeleteFramebuffers(1, &fbo);
+	if (normal_depth_tex)
+		glDeleteTextures(1, &normal_depth_tex);
+	if (diffuse_specular_tex)
+		glDeleteTextures(1, &diffuse_specular_tex);
+	if (emitting_shininess_tex)
+		glDeleteTextures(1, &emitting_shininess_tex);
+	if (depth_rbo)
+		glDeleteTextures(1, &depth_rbo);
 
-	if (ping_fbo) glDeleteFramebuffers(1, &ping_fbo);
-	if (ping_tex) glDeleteTextures(1, &ping_tex);
-	if (pong_fbo) glDeleteFramebuffers(1, &pong_fbo);
-	if (pong_tex) glDeleteTextures(1, &pong_tex);
-	
-	if (final_fbo) glDeleteFramebuffers(1, &final_fbo);
-	if (final_tex) glDeleteTextures(1, &final_tex);
+	if (ping_fbo)
+		glDeleteFramebuffers(1, &ping_fbo);
+	if (ping_tex)
+		glDeleteTextures(1, &ping_tex);
+	if (pong_fbo)
+		glDeleteFramebuffers(1, &pong_fbo);
+	if (pong_tex)
+		glDeleteTextures(1, &pong_tex);
+
+	if (final_fbo)
+		glDeleteFramebuffers(1, &final_fbo);
+	if (final_tex)
+		glDeleteTextures(1, &final_tex);
 }
