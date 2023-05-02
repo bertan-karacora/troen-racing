@@ -1,0 +1,16 @@
+Leuchtende/emittierende Objekte: cool. Für OpenGL in eine große Menge Punktlichtquellen runterbrechen? Dafür gibt es eigene Techniken, ich glaube es ist besser sich da genauer zu informieren da viele Lichtquellen die Performance beeinflussen könnten
+
+
+coole Idee, vllt auch mit ein paar Hindernissen oder so sodass die Beleuchtung interessanter wird (Reflektierende Oberflächen (Boden??))
+
+
+Story: kleines Rennen zwischen verschiedenen Farben
+
+
+Checkpoint zeiten der Fahrer? 
+
+(Leuchtende) Obstacles, Säulen etc
+
+Story aus Rennen animieren
+
+am Boden spiegeln - doppelt rendern auch unter Boden

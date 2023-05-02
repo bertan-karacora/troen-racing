@@ -8,7 +8,8 @@ const GLfloat sensitivity = 1.0;
 const GLint FPS = 30;
 const GLfloat attenuation = exp(-1.0 / FPS);
 
-struct camera_state {
+struct camera_state
+{
 	// Mouse state
 	GLint last_x;
 	GLint last_y;
@@ -29,23 +30,29 @@ struct camera_state {
 	glm::mat4 view_mat;
 };
 
-static camera_state* state;
+static camera_state *state;
 
-GLvoid camera::update(glm::vec3 target) {
+GLvoid camera::update(glm::vec3 target)
+{
 	state->look_at = target;
 
 	state->scroll_delta *= attenuation;
 	state->mouse_delta *= attenuation;
 
 	state->radius += 0.1 * state->scroll_delta;
-	if (state->radius < 0.01) state->radius = 0.01;
+	if (state->radius < 0.01)
+		state->radius = 0.01;
 
 	state->theta -= 0.01 * state->mouse_delta.y;
-	if (state->theta < -0.5 * M_PI) state->theta = -0.5 * M_PI;
-	if (state->theta > 0.5 * M_PI) state->theta = 0.5 * M_PI;
+	if (state->theta < -0.5 * M_PI)
+		state->theta = -0.5 * M_PI;
+	if (state->theta > 0.5 * M_PI)
+		state->theta = 0.5 * M_PI;
 	// technically not necessary, but might avoid numeric instability
-	while (state->phi < 0.0)       state->phi += 2.0 * M_PI;
-	while (state->phi >= 2.0 * M_PI) state->phi -= 2.0 * M_PI;
+	while (state->phi < 0.0)
+		state->phi += 2.0 * M_PI;
+	while (state->phi >= 2.0 * M_PI)
+		state->phi -= 2.0 * M_PI;
 
 	state->phi -= 0.01 * state->mouse_delta.x;
 
@@ -80,12 +87,14 @@ void move(int /*x*/, int /*y*/, int /*dx*/, int /*dy*/) {}
 
 void drag_left(int /*x*/, int /*y*/, int /*dx*/, int /*dy*/) {}
 
-void drag_right(int /*x*/, int /*y*/, int dx, int dy) {
+void drag_right(int /*x*/, int /*y*/, int dx, int dy)
+{
 	state->mouse_delta.x += dx * sensitivity / FPS;
 	state->mouse_delta.y += dy * sensitivity / FPS;
 }
 
-void drag_middle(int /*x*/, int /*y*/, int dx, int dy) {
+void drag_middle(int /*x*/, int /*y*/, int dx, int dy)
+{
 	/*
 	glm::vec3 u(state->view_mat[0][0],
 				state->view_mat[1][0],
@@ -99,66 +108,96 @@ void drag_middle(int /*x*/, int /*y*/, int dx, int dy) {
 	*/
 }
 
-void mouse(int button, int action, int) {
+void mouse(int button, int action, int)
+{
 	int crt_x = state->last_x;
 	int crt_y = state->last_y;
-	if (action == GLFW_PRESS) {
-		switch (button) {
-			case GLFW_MOUSE_BUTTON_LEFT: {
-				state->drag_start_x = crt_x;
-				state->drag_start_y = crt_y;
-				state->left_down = true;
-				break;
-			}
-			case GLFW_MOUSE_BUTTON_RIGHT: {
-				state->drag_start_x = crt_x;
-				state->drag_start_y = crt_y;
-				state->right_down = true;
-				break;
-			}
-			case GLFW_MOUSE_BUTTON_MIDDLE: {
-				state->drag_start_x = crt_x;
-				state->drag_start_y = crt_y;
-				state->middle_down = true;
-				break;
-			}
+	if (action == GLFW_PRESS)
+	{
+		switch (button)
+		{
+		case GLFW_MOUSE_BUTTON_LEFT:
+		{
+			state->drag_start_x = crt_x;
+			state->drag_start_y = crt_y;
+			state->left_down = true;
+			break;
 		}
-	} else {
-		if (button == GLFW_MOUSE_BUTTON_LEFT) {
+		case GLFW_MOUSE_BUTTON_RIGHT:
+		{
+			state->drag_start_x = crt_x;
+			state->drag_start_y = crt_y;
+			state->right_down = true;
+			break;
+		}
+		case GLFW_MOUSE_BUTTON_MIDDLE:
+		{
+			state->drag_start_x = crt_x;
+			state->drag_start_y = crt_y;
+			state->middle_down = true;
+			break;
+		}
+		}
+	}
+	else
+	{
+		if (button == GLFW_MOUSE_BUTTON_LEFT)
+		{
 			state->left_down = false;
-			if (state->dragging) {
+			if (state->dragging)
+			{
 				state->dragging = false;
-			} else {
+			}
+			else
+			{
 				click_left(state->drag_start_x, state->drag_start_y);
 			}
-		} else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+		}
+		else if (button == GLFW_MOUSE_BUTTON_RIGHT)
+		{
 			state->right_down = false;
-			if (state->dragging) {
+			if (state->dragging)
+			{
 				state->dragging = false;
-			} else {
+			}
+			else
+			{
 				click_right(state->drag_start_x, state->drag_start_y);
 			}
-		} else {
+		}
+		else
+		{
 			state->middle_down = false;
-			if (state->dragging) {
+			if (state->dragging)
+			{
 				state->dragging = false;
-			} else {
+			}
+			else
+			{
 				click_middle(state->drag_start_x, state->drag_start_y);
 			}
 		}
 	}
 }
 
-void motion(int x, int y) {
-	if ((state->left_down || state->right_down || state->middle_down) && (abs(x - state->drag_start_x) + abs(y - state->drag_start_y) > 2)) {
+void motion(int x, int y)
+{
+	if ((state->left_down || state->right_down || state->middle_down) && (abs(x - state->drag_start_x) + abs(y - state->drag_start_y) > 2))
+	{
 		state->dragging = true;
 	}
 
-	if (state->dragging) {
-		if (state->left_down) drag_left(x, y, x - state->last_x, y - state->last_y);
-		if (state->right_down) drag_right(x, y, x - state->last_x, y - state->last_y);
-		if (state->middle_down) drag_middle(x, y, x - state->last_x, y - state->last_y);
-	} else {
+	if (state->dragging)
+	{
+		if (state->left_down)
+			drag_left(x, y, x - state->last_x, y - state->last_y);
+		if (state->right_down)
+			drag_right(x, y, x - state->last_x, y - state->last_y);
+		if (state->middle_down)
+			drag_middle(x, y, x - state->last_x, y - state->last_y);
+	}
+	else
+	{
 		move(x, y, x - state->last_x, y - state->last_y);
 	}
 
@@ -166,11 +205,13 @@ void motion(int x, int y) {
 	state->last_y = y;
 }
 
-void scroll(float delta) {
+void scroll(float delta)
+{
 	state->scroll_delta += delta / FPS;
 }
 
-camera::camera(GLFWwindow* window) {
+camera::camera(GLFWwindow *window)
+{
 	state = new camera_state({});
 
 	state->last_x = 0;
@@ -190,20 +231,26 @@ camera::camera(GLFWwindow* window) {
 	state->view_mat = glm::mat4(1.0);
 	update(glm::vec3(0.0));
 
-	glfwSetMouseButtonCallback(window, [] (GLFWwindow*, int button, int action, int mods) { mouse(button, action, mods); });
-	glfwSetCursorPosCallback(window, [] (GLFWwindow*, double x, double y) { motion(static_cast<int>(x), static_cast<int>(y)); });
-	glfwSetScrollCallback(window, [] (GLFWwindow*, double d, double delta) { scroll(-delta); });
+	glfwSetMouseButtonCallback(window, [](GLFWwindow *, int button, int action, int mods)
+							   { mouse(button, action, mods); });
+	glfwSetCursorPosCallback(window, [](GLFWwindow *, double x, double y)
+							 { motion(static_cast<int>(x), static_cast<int>(y)); });
+	glfwSetScrollCallback(window, [](GLFWwindow *, double d, double delta)
+						  { scroll(-delta); });
 }
 
-camera::~camera() {
-	delete [] state;
+camera::~camera()
+{
+	delete[] state;
 }
 
-glm::mat4 camera::viewMat() const {
+glm::mat4 camera::viewMat() const
+{
 	return state->view_mat;
 }
 
-glm::vec3 camera::position() const {
+glm::vec3 camera::position() const
+{
 	glm::mat3 R(state->view_mat);
 	glm::vec3 t(state->view_mat[3]);
 	return -glm::transpose(R) * t;
