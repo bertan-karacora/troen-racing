@@ -1,6 +1,7 @@
 # Trön Racing
 
 [![Video](https://img.youtube.com/vi/pUJhhdyEusw/maxresdefault.jpg)](https://www.youtube.com/watch?v=pUJhhdyEusw)
+Click on the image to play video.
 
 **Trön Racing** is the prototype of a video game, which was designed as a project accompanying the lecture *Introduction to Computer Graphics and Visualization*. It was developed in independent work over a period of 6 weeks.
 
